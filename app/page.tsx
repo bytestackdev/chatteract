@@ -1,11 +1,26 @@
 import { Navigation } from "@/components/header/Navigation";
 import HowItWorks from "@/components/HowItWorks/HowItWorks";
 import { Button } from "@/components/ui/button"
+import AuthButton from "@/components/WebUI/AuthButton";
 import Features from "@/components/WebUI/Features";
 import Footer from "@/components/WebUI/Footer";
+import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default async function HomePage() {
+  const canInitSupabaseClient = () => {
+    // This function is just for the interactive tutorial.
+    // Feel free to remove it once you have Supabase connected.
+    try {
+      createClient();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const isSupabaseConnected = canInitSupabaseClient();
   return (
     <div className="">
       <div className=" flex flex-row justify-between items-center p-10">
@@ -15,7 +30,7 @@ export default function Home() {
         <div>
           <Navigation />
         </div>
-        <Button variant="outline">Login</Button>
+        {isSupabaseConnected && <AuthButton />}
       </div>
 
       <div className=" grid grid-cols-1 md:grid-cols-2 p-10 px-20 mb-10 ">
