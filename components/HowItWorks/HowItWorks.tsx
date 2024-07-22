@@ -10,7 +10,7 @@ const AccordionTriggerComponent = ({ count, title }: { count: string, title: str
   return (
     <div className=" flex flex-row gap-3 items-center">
       <p className=" text-sm">{count}</p>
-      <p className=" text-2xl font-semibold">{title}</p>
+      <p className=" md:text-2xl font-semibold">{title}</p>
     </div>
   )
 }

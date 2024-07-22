@@ -5,7 +5,7 @@ import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa'
 const Footer = () => {
   return (
     <div className=" text-white pt-20 pb-10">
-      <div className=" grid grid-cols-2 gap-2">
+      <div className=" grid grid-cols-1 md:grid-cols-2 gap-2">
         <div className=" px-10">
           <div>
             <p className=" font-semibold text-3xl">BYTESTACK.AI</p>
@@ -19,8 +19,8 @@ const Footer = () => {
           </div>
         </div>
         <div>
-          <div className="grid grid-cols-3">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-3">
+            <div className=' p-10 md:p-0'>
               <p className=" font-semibold">Product</p>
               <div className=" text-base font-extralight">
                 <p><a href="">Pricing</a></p>
@@ -28,7 +28,7 @@ const Footer = () => {
                 <p><a href="">Afiliates</a></p>
               </div>
             </div>
-            <div>
+            <div className=' p-10 md:p-0'>
               <p className=" font-semibold">Resources</p>
               <div className=" text-base font-extralight">
                 <p><a href="">API</a></p>
@@ -37,7 +37,7 @@ const Footer = () => {
                 <p><a href="">Blog</a></p>
               </div>
             </div>
-            <div>
+            <div className=' p-10 md:p-0'>
               <p className=" font-semibold">Company</p>
               <div className=" text-base font-extralight">
                 <p><a href="">Privacy Policy</a></p>

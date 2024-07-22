@@ -9,7 +9,7 @@ const Features = () => {
         <p className="uppercase text-base text-purple-600 font-bold">powerful features</p>
         <p className="text-lg font-medium">Everything you need for your no-code AI chatbot</p>
       </div>
-      <div className=' grid grid-cols-1 md:grid-cols-3 gap-10 p-10'>
+      <div className=' grid grid-cols-1 md:grid-cols-3 gap-10 md:p-10'>
         <FeatureCard
           cardUrl='/card1.png'
           title='Trustworthy, Accurate Answers'

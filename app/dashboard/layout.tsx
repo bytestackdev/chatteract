@@ -1,3 +1,4 @@
+import Header from "@/components/header/Header";
 import { Navigation } from "@/components/header/Navigation";
 import AuthButton from "@/components/WebUI/AuthButton";
 import { createClient } from "@/utils/supabase/server";
@@ -20,15 +21,7 @@ export default async function RootLayout({
 
   return (
     <>
-      <div className=" flex flex-row justify-between items-center p-10">
-        <div>
-          <p className=" font-semibold">BYTESTACK.AI</p>
-        </div>
-        <div>
-          <Navigation />
-        </div>
-        {<AuthButton />}
-      </div>
+      <Header isLoggedIn={true} />
       {children}
     </>
   );

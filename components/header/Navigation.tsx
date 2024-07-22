@@ -39,7 +39,7 @@ export function Navigation() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
-        <div className=" flex flex-row gap-6">
+        <div className=" flex flex-col md:flex-row gap-2 md:gap-6">
           <NavigationMenuItem>
             <Link href="#" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -51,6 +51,13 @@ export function Navigation() {
             <Link href="#" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Pricing
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/dashboard" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Dashboard
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
@@ -69,13 +76,6 @@ export function Navigation() {
                 ))}
               </ul>
             </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href="/dashboard" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Dashboard
-              </NavigationMenuLink>
-            </Link>
           </NavigationMenuItem>
         </div>
       </NavigationMenuList>
