@@ -10,6 +10,7 @@ export default async function AuthButton() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  console.log(user)
   const signOut = async () => {
     "use server";
 
@@ -20,7 +21,7 @@ export default async function AuthButton() {
 
   return user ? (
     <div className="flex items-center gap-4">
-      <p className=" text-xs text-slate-500">Hey, {user.email}!</p>
+      <p className=" text-xs text-slate-500">Hey, {user.user_metadata.displayName || user.email}!</p>
       <form action={signOut}>
         <Button variant={'default'}>
           Logout

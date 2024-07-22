@@ -2,38 +2,45 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { SubmitButton } from "./submit-button";
-import ToastMessage from "../../components/ui/ToastMessage";
 import { Button } from "@/components/ui/button";
+import ToastMessage from "@/components/ui/ToastMessage";
 
-export default async function LoginPage({
+export default async function SignUpPage({
   searchParams,
 }: {
   searchParams: { message: string };
 }) {
-  const signIn = async (formData: FormData) => {
+
+  const signUp = async (formData: FormData) => {
     "use server";
 
+    const origin = headers().get("origin");
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-
-    if (email === '' || password === ''){
-      return redirect("/login?message=Please fill in all fields");
+    const displayName = formData.get("displayName") as string;
+    
+    if (email === '' || password === '' || displayName === ''){
+      return redirect("/sign-up?message=Please fill in all fields");
     }
-
+    
     const supabase = createClient();
-
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${origin}/auth/callback`,
+        data: {
+          displayName,
+        },
+      },
     });
 
     if (error) {
       console.log(error);
-      return redirect("/login?message=Error creating new account. Please try again");
+      return redirect("/sign-up?message=Could not authenticate user");
     }
 
-    return redirect("/dashboard");
+    return redirect("/sign-up?message=Check email to continue sign in process");
   };
 
   const supabase = createClient();
@@ -70,9 +77,18 @@ export default async function LoginPage({
 
         <div className="flex justify-center items-center">
           <div className=" border border-slate-200 rounded-md p-5">
-            <p className=" text-2xl font-semibold mb-2">Login</p>
-            <p className=" text-sm text-slate-600 mb-5">Enter your email and password to login to your account</p>
-            <form className=" flex flex-col w-full justify-center gap-2 text-foreground border-slate-400">
+            <p className=" text-2xl font-semibold mb-2">Sign Up</p>
+            <p className=" text-sm text-slate-600 mb-5">Fill out the necessary details to create new account</p>
+            <form className=" flex flex-col w-full justify-center gap-2 text-foreground">
+              <label className="text-md" htmlFor="displayName">
+                Name
+              </label>
+              <input
+                className="rounded-md px-4 py-2 bg-inherit border mb-6"
+                name="displayName"
+                placeholder="Your Display Name"
+                required
+              />
               <label className="text-md" htmlFor="email">
                 Email
               </label>
@@ -92,8 +108,8 @@ export default async function LoginPage({
                 placeholder="••••••••"
                 required
               />
-              <Button formAction={signIn}>
-                Sign In
+              <Button formAction={signUp}>
+                Create New Account
               </Button>
               {searchParams?.message && (
                 <ToastMessage message={searchParams.message} />
@@ -101,9 +117,9 @@ export default async function LoginPage({
             </form>
 
             <div className=" flex flex-row gap-2 items-center mt-2">
-              <p className=" mt-1">Don't have the account ?</p>
-              <Link className="text-sm text-blue-600 hover:text-blue-500 mt-1" href="/sign-up">
-                Create new account
+              <p className=" mt-1">Already have an account ?</p>
+              <Link className="text-sm text-blue-600 hover:text-blue-500 mt-1" href="/login">
+                Login
               </Link>
             </div>
           </div>
