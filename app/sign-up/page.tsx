@@ -28,7 +28,7 @@ export default async function SignUpPage({
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        emailRedirectTo: `${origin}/api/auth/callback`,
         data: {
           displayName,
         },
