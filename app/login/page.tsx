@@ -90,7 +90,7 @@ export default function LoginPage({ searchParams }: { searchParams: { message: s
           </form>
 
           <div className="flex flex-row gap-2 items-center mt-2">
-            <p className="mt-1">Don't have an account?</p>
+            <p className="mt-1">Don&apos;t have an account?</p>
             <Link className="text-sm text-blue-600 hover:text-blue-500 mt-1" href="/sign-up">
               Create a new account
             </Link>

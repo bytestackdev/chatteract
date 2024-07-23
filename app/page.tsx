@@ -90,7 +90,7 @@ export default async function HomePage() {
               <p className="uppercase text-base text-purple-600 font-bold">Easy to manage</p>
               <p className="text-2xl md:text-4xl font-semibold mt-5">A dashboard to manage all testimonials and data</p>
             </div>
-            <p className=" text-slate-500 text-base md:text-lg">You will have a simple & clean dashboard to manage all testimonials and data in one place. it's like your email inbox, but it's designed for your social proof!</p>
+            <p className=" text-slate-500 text-base md:text-lg">You will have a simple & clean dashboard to manage all testimonials and data in one place. it&apos;s like your email inbox, but it&apos;s designed for your social proof!</p>
             <div className=" mt-5">
               <Button size={'lg'}>Try it for Free</Button>
             </div>
