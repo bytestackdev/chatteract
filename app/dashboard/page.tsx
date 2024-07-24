@@ -1,11 +1,15 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 const DashboardPage = () => {
-  return (
-    <div>
-      <p>DashboardPage</p>
-    </div>
-  )
+  const router = useRouter()
+
+  useEffect(() => {
+    router.push('/dashboard/chatbots')
+  }, [router])
+
+  return <></>
 }
 
 export default DashboardPage

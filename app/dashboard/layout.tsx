@@ -1,4 +1,6 @@
+import Tabs from "@/components/dashboard/tabs";
 import Header from "@/components/header/Header";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 export default async function RootLayout({
   children,
@@ -9,7 +11,7 @@ export default async function RootLayout({
   return (
     <>
       <Header isLoggedIn={true} />
-      {children}
+      <DashboardLayout>{children}</DashboardLayout>
     </>
   );
 }

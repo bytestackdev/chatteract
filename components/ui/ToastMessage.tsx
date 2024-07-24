@@ -13,7 +13,7 @@ const ToastMessage: React.FC<ToastMessageProps> = ({ message }) => {
   
   useEffect(() => {
     if (message) {
-      toast.error(message)
+      toast.loading(message)
 
       const params = new URLSearchParams(searchParams.toString())
       params.delete('message')
