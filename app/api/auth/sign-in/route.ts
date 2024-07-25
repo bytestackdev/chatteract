@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   const { email, password } = await request.json();
 
   if (!email || !password) {
-    return NextResponse.redirect(new URL('/login?message=Please fill in all fields', request.url));
+    return NextResponse.redirect(new URL('/login?status=error&message=Please fill in all fields', request.url));
   }
 
   const supabase = createClient();
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
   if (error) {
     console.log(error.message);
-    return NextResponse.redirect(new URL(`/login?message=${error.message}`, request.url));
+    return NextResponse.redirect(new URL(`/login?status=error&message=${error.message}`, request.url));
   }
 
   return NextResponse.redirect(new URL('/dashboard', request.url));

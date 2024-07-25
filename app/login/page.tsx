@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ToastMessage from '@/components/ui/ToastMessage';
+import { searchParamsType } from '@/types/type';
 
-export default function LoginPage({ searchParams }: { searchParams: { message: string } }) {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -85,8 +86,9 @@ export default function LoginPage({ searchParams }: { searchParams: { message: s
               required
             />
             <Button type="submit">Sign In</Button>
-            {error && <ToastMessage message={error} />}
-            {searchParams?.message && <ToastMessage message={searchParams.message} />}
+            <Suspense>
+              <ToastMessage />
+            </Suspense>
           </form>
 
           <div className="flex flex-row gap-2 items-center mt-2">

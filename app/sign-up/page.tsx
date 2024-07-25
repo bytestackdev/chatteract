@@ -1,55 +1,39 @@
+'use client'
 import Link from "next/link";
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ToastMessage from "@/components/ui/ToastMessage";
+import { Suspense, useState } from "react";
+import { searchParamsType } from "@/types/type";
 
-export default async function SignUpPage({
-  searchParams,
-}: {
-  searchParams: { message: string };
-}) {
-
+export default function SignUpPage() {
+  const [error, setError] = useState('');
   const signUp = async (formData: FormData) => {
-    "use server";
 
-    const origin = headers().get("origin");
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const displayName = formData.get("displayName") as string;
-    
-    if (email === '' || password === '' || displayName === ''){
-      return redirect("/sign-up?message=Please fill in all fields");
+
+    if (!email || !password || !displayName) {
+      setError('Please fill in all fields');
+      return;
     }
-    
-    const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${origin}/api/auth/callback`,
-        data: {
-          displayName,
-        },
-      },
+
+    const response = await fetch('/api/auth/sign-up', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, displayName }),
     });
 
-    if (error) {
-      console.log(error);
-      return redirect("/sign-up?message=Could not authenticate user");
+    if (response.redirected) {
+      window.location.href = response.url;
+    } else {
+      const data = await response.json();
+      setError(data.error || 'An error occurred');
     }
-
-    return redirect("/sign-up?message=Check email to continue sign in process");
   };
-
-  const supabase = createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (user) {
-    return redirect("/");
-  }
 
   return (
     <>
@@ -111,9 +95,9 @@ export default async function SignUpPage({
               <Button formAction={signUp}>
                 Create New Account
               </Button>
-              {searchParams?.message && (
-                <ToastMessage message={searchParams.message} />
-              )}
+              <Suspense>
+                <ToastMessage />
+              </Suspense>
             </form>
 
             <div className=" flex flex-row gap-2 items-center mt-2">
