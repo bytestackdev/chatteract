@@ -10,12 +10,6 @@ const ToastMessage: React.FC = () => {
   const router = useRouter()
 
   useEffect(() => {
-    console.log('search params:', searchParams)
-    console.log(status)
-    console.log(message)
-  }, [searchParams])
-
-  useEffect(() => {
     if (message) {
       if(status === 'error'){
         toast.error(message)

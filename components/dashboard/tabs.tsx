@@ -16,7 +16,7 @@ const Tabs: React.FC = () => {
       </Link>
       <Link 
         href="/dashboard/settings" 
-        className={`py-1 px-3 text-sm text-center ${pathname === '/dashboard/settings' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
+        className={`py-1 px-3 text-sm text-center ${pathname.includes('/dashboard/settings') ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
       >
         Settings
       </Link>
