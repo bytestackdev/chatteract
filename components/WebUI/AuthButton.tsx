@@ -10,9 +10,15 @@ const AuthButton: React.FC = () => {
 
   useEffect(() => {
     async function fetchUser() {
-      const response = await fetch('/api/auth/user');
-      const data = await response.json();
-      setUser(data.user);
+      try {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     fetchUser();

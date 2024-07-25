@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import toast from 'react-hot-toast'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import LoadingWrapper from '../ui/LoadingWrapper'
 
 interface WaitlistFormState {
 	name: string;
@@ -16,13 +17,14 @@ interface WaitlistFormState {
 
 const formDefaultState = {
 	name: '',
-  email: '',
-  number: undefined,
+	email: '',
+	number: undefined,
 }
 
 const WaitListMainView: React.FC = () => {
 	const [formState, setFormState] = useState<WaitlistFormState>(formDefaultState);
 	const [isOpen, setIsOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { id, value } = e.target;
@@ -36,6 +38,7 @@ const WaitListMainView: React.FC = () => {
 		e.preventDefault();
 
 		try {
+			setLoading(true)
 			const response = await fetch('/api/waitlist', {
 				method: 'POST',
 				headers: {
@@ -55,6 +58,8 @@ const WaitListMainView: React.FC = () => {
 		} catch (error: any) {
 			console.error('Submission Error:', error);
 			toast.error('There was an unexpected error. Please try again.');
+		} finally {
+			setLoading(false)
 		}
 	};
 
@@ -64,57 +69,59 @@ const WaitListMainView: React.FC = () => {
 				<Button variant="destructive" onClick={() => setIsOpen(true)}>Join the Waiting List</Button>
 			</DialogTrigger>
 			<DialogContent className="max-w-[400px] md:max-w-[500px]">
-				<DialogHeader>
-					<DialogTitle>Join the Wait List</DialogTitle>
-					<DialogDescription>
-						Enter your details below to join our waiting list. Save your changes to complete the process.
-					</DialogDescription>
-				</DialogHeader>
-				<form onSubmit={handleSubmit} className="grid gap-4 py-4">
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="name" className="text-right">
-							Name
-						</Label>
-						<Input
-							id="name"
-							placeholder="Pedro Duarte"
-							className="col-span-3"
-							value={formState.name}
-							onChange={handleChange}
-							required
-						/>
-					</div>
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="email" className="text-right">
-							Email
-						</Label>
-						<Input
-							id="email"
-							placeholder='example@example.com'
-							className="col-span-3"
-							type='email'
-							value={formState.email}
-							onChange={handleChange}
-							required
-						/>
-					</div>
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="number" className="text-right leading-5 flex flex-col">
-							Phone Number
-							<span className=' text-xs text-slate-600'>(Optional)</span>
-						</Label>
-						<PhoneInput
-							containerClass='col-span-3'
-							inputClass='!w-full'
-							country={'us'}
-							value={formState.number}
-							onChange={(value) => setFormState(prevState => ({ ...prevState, number: value }))}
-						/>
-					</div>
-					<DialogFooter>
-						<Button type="submit">Save changes</Button>
-					</DialogFooter>
-				</form>
+				<LoadingWrapper loading={loading}>
+					<DialogHeader>
+						<DialogTitle>Join the Wait List</DialogTitle>
+						<DialogDescription>
+							Enter your details below to join our waiting list. Save your changes to complete the process.
+						</DialogDescription>
+					</DialogHeader>
+					<form onSubmit={handleSubmit} className="grid gap-4 py-4">
+						<div className="grid grid-cols-4 items-center gap-4">
+							<Label htmlFor="name" className="text-right">
+								Name
+							</Label>
+							<Input
+								id="name"
+								placeholder="Pedro Duarte"
+								className="col-span-3"
+								value={formState.name}
+								onChange={handleChange}
+								required
+							/>
+						</div>
+						<div className="grid grid-cols-4 items-center gap-4">
+							<Label htmlFor="email" className="text-right">
+								Email
+							</Label>
+							<Input
+								id="email"
+								placeholder='example@example.com'
+								className="col-span-3"
+								type='email'
+								value={formState.email}
+								onChange={handleChange}
+								required
+							/>
+						</div>
+						<div className="grid grid-cols-4 items-center gap-4">
+							<Label htmlFor="number" className="text-right leading-5 flex flex-col">
+								Phone Number
+								<span className=' text-xs text-slate-600'>(Optional)</span>
+							</Label>
+							<PhoneInput
+								containerClass='col-span-3'
+								inputClass='!w-full'
+								country={'us'}
+								value={formState.number}
+								onChange={(value) => setFormState(prevState => ({ ...prevState, number: value }))}
+							/>
+						</div>
+						<DialogFooter>
+							<Button type="submit">Save changes</Button>
+						</DialogFooter>
+					</form>
+				</LoadingWrapper>
 			</DialogContent>
 		</Dialog>
 	);
