@@ -10,7 +10,7 @@ export default function SettingsLayout({
 			<div className=" flex flex-row gap-2">
 				<SettingSidebar />
 				<div className="flex-1">
-					<div className="border border-gray-200 rounded-lg p-4">
+					<div className="">
 						{children}
 					</div>
 				</div>

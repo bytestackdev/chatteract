@@ -22,7 +22,7 @@ const ToastMessage: React.FC = () => {
       router.replace(`?${params.toString()}`)
     }
      
-  }, [message])
+  }, [message, router, searchParams, status])
 
   return null
 }
