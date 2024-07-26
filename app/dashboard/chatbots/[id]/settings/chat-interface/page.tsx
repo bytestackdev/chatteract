@@ -1,8 +1,9 @@
+import ChatInterfaceMainView from '@/components/dashboard/Chatbot/ChatbotSettings/ChatInterface/ChatInterfaceMainView'
 import React from 'react'
 
 const ChatInterfaceSettingsPage = () => {
 	return (
-		<div>ChatInterfaceSettingsPage</div>
+		<ChatInterfaceMainView />
 	)
 }
 
