@@ -1,5 +1,5 @@
 import SettingsLayout from "@/app/layouts/SettingsLayout";
-import Tabs from "@/components/dashboard/tabs";
+import Tabs from "@/components/dashboard/tabs/tabs";
 
 export default async function RootLayout({
 	children,
