@@ -29,25 +29,25 @@ const ChatbotTabs: React.FC = () => {
       </Link>
       <Link 
         href={TabAndPaths['activity']} 
-        className={`py-1 px-3 text-sm text-center ${pathname === TabAndPaths['activity'] ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
+        className={`py-1 px-3 text-sm text-center ${pathname.includes(TabAndPaths['activity']) ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
       >
         Activity
       </Link>
       <Link 
         href={TabAndPaths['sources']} 
-        className={`py-1 px-3 text-sm text-center ${pathname === TabAndPaths['sources'] ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
+        className={`py-1 px-3 text-sm text-center ${pathname.includes(TabAndPaths['sources']) ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
       >
         Sources
       </Link>
       <Link 
         href={TabAndPaths['connect']} 
-        className={`py-1 px-3 text-sm text-center ${pathname === TabAndPaths['connect'] ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
+        className={`py-1 px-3 text-sm text-center ${pathname.includes(TabAndPaths['connect']) ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
       >
         Connect
       </Link>
       <Link 
         href={TabAndPaths['settings']} 
-        className={`py-1 px-3 text-sm text-center ${pathname === TabAndPaths['settings'] ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
+        className={`py-1 px-3 text-sm text-center ${pathname.includes(TabAndPaths['settings']) ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
       >
         Settings
       </Link>
