@@ -1,9 +1,15 @@
-import React from 'react'
+'use client'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 
 const SettingsPage = () => {
-	return (
-		<div>SettingsPage</div>
-	)
+	const router = useRouter()
+
+	useEffect(() => {
+		router.push('settings/general')
+	}, [router])
+
+	return <></>
 }
 
 export default SettingsPage
