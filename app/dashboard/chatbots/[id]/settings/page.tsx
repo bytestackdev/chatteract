@@ -1,4 +1,5 @@
 'use client'
+import CustomSkeleton from '@/components/ui/CustomSkeleton'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 
@@ -9,7 +10,9 @@ const SettingsPage = () => {
 		router.push('settings/general')
 	}, [router])
 
-	return <></>
+	return <>
+		<CustomSkeleton />
+	</>
 }
 
 export default SettingsPage
