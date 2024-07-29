@@ -1,8 +1,9 @@
+import MainSettingsLeadsView from '@/components/dashboard/Chatbot/ChatbotSettings/Leads/MainSettingsLeadsView'
 import React from 'react'
 
 const SettingsLeadPage = () => {
 	return (
-		<div>SettingsLeadPage</div>
+		<MainSettingsLeadsView />
 	)
 }
 
