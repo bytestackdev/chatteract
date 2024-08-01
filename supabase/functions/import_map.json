@@ -1,0 +1,24 @@
+{
+  "imports": {
+    "@std/": "https://deno.land/std@0.168.0/",
+
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.21.0",
+    "openai": "https://esm.sh/openai@4.10.0",
+    "common-tags": "https://esm.sh/common-tags@1.8.2",
+    "ai": "https://esm.sh/ai@2.2.13",
+
+    "mdast-util-from-markdown": "https://esm.sh/v132/mdast-util-from-markdown@2.0.0",
+    "mdast-util-to-markdown": "https://esm.sh/v132/mdast-util-to-markdown@2.1.0",
+    "mdast-util-to-string": "https://esm.sh/v132/mdast-util-to-string@4.0.0",
+    "unist-builder": "https://esm.sh/v132/unist-builder@4.0.0",
+    "mdast": "https://esm.sh/v132/@types/mdast@4.0.0/index.d.ts",
+    
+    "https://esm.sh/v132/decode-named-character-reference@1.0.2/esnext/decode-named-character-reference.mjs": "https://esm.sh/decode-named-character-reference@1.0.2?target=deno",
+
+    "pdf-parse": "https://cdn.jsdelivr.net/npm/pdf-parse@1.1.1/index.min.js",
+    "csv-parser": "https://cdn.jsdelivr.net/npm/csv-parser@3.0.0/index.min.js",
+    "fs": "https://cdn.jsdelivr.net/npm/fs-js@1.0.6/index.min.js",
+    "mammoth": "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/lib/index.min.js",
+    "pptxgenjs": "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.cjs.min.js"
+  }
+}
