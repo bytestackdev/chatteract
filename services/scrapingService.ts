@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { load } from 'cheerio';
 import nlp from 'compromise';
+import { parseWebsite, extractURLs } from './websiteService';
 
 interface Metadata {
   title: string;
@@ -21,7 +22,7 @@ interface ScrapeResult {
 const summarizeText = (text: string, numSentences: number = 3): string => {
   const doc = nlp(text);
   const sentences = doc.sentences().out('array');
-  
+
   // Use a simple heuristic to choose the first few sentences
   return sentences.slice(0, numSentences).join(' ');
 };
@@ -45,30 +46,40 @@ const extractKeywords = (text: string): string[] => {
     .slice(0, 10);
 };
 
-export const scrapeWebpage = async (url: string): Promise<ScrapeResult> => {
-  try {
-    const response = await axios.get(url);
-    const $ = load(response.data);
-    const text = $('body').text().trim().replace(/\s+/g, ' ');
+export const scrapeWebpage = async (url: string): Promise<ScrapeResult[]> => {
+  const urls = await extractURLs(url);
+  const results: ScrapeResult[] = [];
 
-    const metadata: Metadata = {
-      title: $('title').text(),
-      description: $('meta[name="description"]').attr('content') || undefined,
-      keywords: $('meta[name="keywords"]').attr('content') || undefined,
-      author: $('meta[name="author"]').attr('content') || undefined,
-      url: url,
-      dateScraped: new Date().toISOString(),
-    };
+  for (const link of urls) {
+    try {
+      const response = await axios.get(link);
+      const $ = load(response.data);
+      const text = $('p, h1, h2, h3, h4, h5, h6, li, blockquote, span')
+        .text()
+        .trim()
+        .replace(/\s+/g, ' ');
 
-    // Extract additional NLP-friendly data
-    const keywordList = extractKeywords(text);
-    const summary = summarizeText(text);
+      const metadata: Metadata = {
+        title: $('title').text(),
+        description: $('meta[name="description"]').attr('content') || undefined,
+        keywords: $('meta[name="keywords"]').attr('content') || undefined,
+        author: $('meta[name="author"]').attr('content') || undefined,
+        url: link,
+        dateScraped: new Date().toISOString(),
+      };
 
-    metadata.extractedKeywords = keywordList;
-    metadata.summary = summary;
+      // Extract additional NLP-friendly data
+      const keywordList = extractKeywords(text);
+      const summary = summarizeText(text);
 
-    return { text, metadata };
-  } catch (error) {
-    throw new Error('Failed to scrape webpage');
+      metadata.extractedKeywords = keywordList;
+      metadata.summary = summary;
+
+      results.push({ text, metadata });
+    } catch (error) {
+      console.error(`Failed to scrape webpage ${link}:`, error);
+    }
   }
+
+  return results;
 };

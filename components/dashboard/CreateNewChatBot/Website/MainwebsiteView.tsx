@@ -19,7 +19,9 @@ const MainwebsiteView = () => {
 		try {
 			setLoading(true)
 			const response = await axios.post('/api/webpage-scrap', { url: website });
-			console.log('response->', response.data.text);
+			console.log('response ->', response)
+			const newResponse = await axios.post('/api/embedding-service', { data: response.data })
+			console.log('embedding-response ->', newResponse)
 			setWebsiteContent(response.data.text)
 		} catch (error) {
 			console.error('Error fetching data:', error);
@@ -40,7 +42,7 @@ const MainwebsiteView = () => {
 					<LoadingButton loading={loading} onClick={fetchDataFromLink}>Fetch links</LoadingButton>
 				</div>
 
-			{websiteContent && <span className=' mt-3'>Data is fetched from this site <b>{website}</b></span>}
+				{websiteContent && <span className=' mt-3'>Data is fetched from this site <b>{website}</b></span>}
 
 				<p className=" my-4 text-gray-500 text-sm">This will crawl all the links starting with the URL (not including files on the website).</p>
 
