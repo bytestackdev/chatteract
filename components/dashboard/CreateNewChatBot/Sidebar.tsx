@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from 'next/link';
 import { CiFileOn, CiGlobe } from "react-icons/ci";
 import { LuText } from "react-icons/lu";
@@ -10,13 +10,15 @@ import { RiNotionFill } from "react-icons/ri";
 
 const Sidebar = () => {
 	const pathname = usePathname();
+	const splittedPathName = pathname.split('/')
+	const chatbotId = splittedPathName[splittedPathName.length - 2]
 
 	const TabAndPaths = {
-		'files': '/dashboard/create-new-chatbot/files',
-		'text': '/dashboard/create-new-chatbot/text',
-		'website': '/dashboard/create-new-chatbot/website',
-		'qna': '/dashboard/create-new-chatbot/qna',
-		'notion': '/dashboard/create-new-chatbot/notion',
+		'files': `/dashboard/create-new-chatbot/${chatbotId}/files`,
+		'text': `/dashboard/create-new-chatbot/${chatbotId}/text`,
+		'website': `/dashboard/create-new-chatbot/${chatbotId}/website`,
+		'qna': `/dashboard/create-new-chatbot/${chatbotId}/qna`,
+		'notion': `/dashboard/create-new-chatbot/${chatbotId}/notion`,
 	}
 
 	return (

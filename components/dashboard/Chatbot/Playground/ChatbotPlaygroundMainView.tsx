@@ -6,7 +6,26 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import Chatbot from './Chatbot'
 
+import { usePipeline } from '@/lib/hooks/use-pipeline';
+import { useChat } from 'ai/react';
+import { createClient } from '@/utils/supabase/client'
+import DummyChatbot from './DummyChatbot'
+
 const ChatbotPlaygroundMainView = () => {
+	const supabase = createClient()
+	 
+	const generateEmbedding = usePipeline(
+		'feature-extraction',
+		'Supabase/gte-small'
+	)
+
+	const { messages, input, handleInputChange, handleSubmit, isLoading } =
+  useChat({
+    api: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/chat`,
+  });
+
+	const isReady = !!generateEmbedding
+
 
 	const [showSidebar, setShowSidebar] = useState(true)
 
@@ -179,7 +198,8 @@ const ChatbotPlaygroundMainView = () => {
 														<div className='flex h-full w-full flex-col'>
 															<div className='flex h-full w-full flex-col'>
 																<div className='h-full w-full overflow-hidden rounded-lg border-[1px]'>
-																	<Chatbot />
+																	{/* <Chatbot /> */}
+																	<DummyChatbot />
 																</div>
 															</div>
 														</div>

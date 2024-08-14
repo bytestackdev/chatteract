@@ -8,19 +8,24 @@ import React, { useState } from 'react'
 import URLManager from './URLManager'
 import axios from 'axios'
 import { LoadingButton } from '@/components/extension/LoadingButton'
+import { useParams } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 const MainwebsiteView = () => {
 
 	const [website, setWebsite] = useState()
 	const [websiteContent, setWebsiteContent] = useState('')
 	const [loading, setLoading] = useState(false)
+	const { chatbotId } = useParams()
 
 	const fetchDataFromLink = async () => {
 		try {
 			setLoading(true)
 			const response = await axios.post('/api/webpage-scrap', { url: website });
-			console.log('response ->', response)
-			const newResponse = await axios.post('/api/embedding-service', { data: response.data })
+			const newResponse = await axios.post('/api/embedding-service', { data: response.data, chatbotId: chatbotId, dataType: 'website' })
+			if(newResponse.status === 200) {
+				toast.success('Website fetched and embeddings generated successfully')
+			}
 			console.log('embedding-response ->', newResponse)
 			setWebsiteContent(response.data.text)
 		} catch (error) {
@@ -37,7 +42,7 @@ const MainwebsiteView = () => {
 				<div className=' flex flex-row gap-3 items-end'>
 					<div className=' flex-1'>
 						<Label htmlFor='crawl'>Crawl</Label>
-						<Input onChange={(e: any) => setWebsite(e.target.value)} name='crawl' className='mt-1' placeholder='https://www.example.com' />
+						<Input disabled={loading} onChange={(e: any) => setWebsite(e.target.value)} name='crawl' className='mt-1' placeholder='https://www.example.com' />
 					</div>
 					<LoadingButton loading={loading} onClick={fetchDataFromLink}>Fetch links</LoadingButton>
 				</div>

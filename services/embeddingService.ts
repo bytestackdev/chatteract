@@ -1,15 +1,17 @@
 import _, { chunk } from 'lodash';
 import axios from 'axios';
-// import { createClient, SupabaseClient } from '@supabase/supabase-js';
 // import { GROQ_API_URL, GROQ_API_KEY } from '../config/groq';
 // import { SUPABASE_URL, SUPABASE_KEY } from '../config/constant';
 import { Groq } from 'groq-sdk';
+import { createClient } from '@/utils/supabase/server';
+// import { createClient } from '@/utils/supabase/client';
+import crypto from 'crypto';
 
 const CHUNK_SIZE = 1000;
 
-// const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+// const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const groq = new Groq({
-  apiKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  apiKey: process.env.GROQ,
 });
 
 // Define types
@@ -30,44 +32,89 @@ type CreateEmbeddingResponse = {
 };
 
 function chunkText(text: string, chunkSize: number): string[] {
-  const words = text.split(/\s+/);
   const chunks: string[] = [];
-  for (let i = 0; i < words.length; i += chunkSize) {
-    chunks.push(words.slice(i, i + chunkSize).join(' '));
+
+  for (let i = 0; i < text.length; i += chunkSize) {
+    const chunk = text.slice(i, i + chunkSize);
+    chunks.push(chunk);
   }
+
   return chunks;
 }
 
-async function getEmbedding(text: string): Promise<any> {
-  try{
-		const response = await groq.embeddings.create({
-			model: "llama3-embed",
-			input: text,
-		});
-	
-		console.log('embedding-response ->', response)
-		return response.embeddings[0].embedding;
-	} catch(error){
-		console.error('Error getting embedding:', error);
-	}
+function generateChecksum(chunk: string) {
+  return crypto.createHash('sha256').update(chunk).digest('hex');
 }
 
-// async function storeInSupabase(processedChunks: ProcessedChunk[]): Promise<any> {
-//   const { data, error } = await supabase
-//     .from('text_chunks')
-//     .insert(processedChunks);
 
-//   if (error) throw error;
-//   return data;
+// async function getEmbedding(text: string): Promise<any> {
+//   try{
+// 		const response = await groq.embeddings.create({
+// 			model: "gemma-7b-it",
+// 			input: text,
+// 		});
+
+// 		console.log('embedding-response ->', response)
+// 		return response.embeddings[0].embedding;
+// 	} catch(error){
+// 		console.error('Error getting embedding:', error);
+// 	}
 // }
 
-export const chunkAndEmbedText = async (text: string, metadata: Metadata, chunkSize: number = CHUNK_SIZE): Promise<{ message: string; chunkCount: number }> => {
+async function storeInSupabase(processedChunks: ProcessedChunk[], chatbotId: string, dataType: string, ingestedDocId: string): Promise<any> {
   try {
+    const supabase = createClient();
+    const records = processedChunks.map((item) => ({
+      chatbotid: chatbotId,
+      chunks: item.chunk,
+      embedding: JSON.parse(item.embedding).embedding,
+      metadata: item.metadata,
+      type: dataType,
+      checksum: generateChecksum(item.chunk),
+      ingested_data_id: ingestedDocId
+    }));
+
+    const { data, error } = await supabase
+      .from('embeddings')
+      .insert(records)
+      .select('id');
+
+    if (error) {
+      if (error.code === '23505') {
+        // Duplicate key error, treat it as a safe case
+        console.warn('Duplicate checksum detected, skipping insertion:', error.details);
+        return { success: true, message: 'Duplicate checksum, skipping insertion.' };
+      } else {
+        // Log other errors for debugging purposes
+        console.error('Error inserting text embeddings:', error);
+        return { success: false, message: 'Error inserting embeddings.', error: error.message };
+      }
+    }
+
+    return { success: true, data };
+
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return { success: false, message: 'Unexpected error occurred.', error: error };
+  }
+}
+
+
+export const chunkAndEmbedText = async (text: string, metadata: Metadata, chatbotId: string, dataType: string, ingestedDocId: string, chunkSize: number = CHUNK_SIZE): Promise<{ message: string; chunkCount: number }> => {
+  try {
+    // const supabase = createClient()
+    // const { data, error } = await supabase.from('ingesteddata').insert({ content: text, type: dataType }).select('id')
+
+    // if (error) {
+    //   throw new Error('Failed to insert data to DB')
+    // }
+
+    // const ingestedDocId = data[0].id
+
     const chunks = chunkText(text, chunkSize);
-		console.log('chunks--->', chunks)
     const processedChunks: ProcessedChunk[] = await Promise.all(
       chunks.map(async (chunk, index) => {
-        const embedding = await getEmbedding(chunk);
+        const embedding = await generateEmbeddingsFromSupbaseGteSmall(chunk);
         return {
           chunk,
           embedding,
@@ -76,32 +123,33 @@ export const chunkAndEmbedText = async (text: string, metadata: Metadata, chunkS
       })
     );
 
-    console.log('processedChunks->', processedChunks);
-    // await storeInSupabase(processedChunks);
+    const response = await storeInSupabase(processedChunks, chatbotId, dataType, ingestedDocId);
 
-    return { message: 'Text processed and stored successfully', chunkCount: chunks.length };
+    if (response.success) {
+      return { message: 'Text processed and stored successfully', chunkCount: chunks.length };
+    } else {
+      throw new Error('Failed to store embeddings in DB');
+    }
   } catch (error) {
+    console.error('Error processing text:', error);
     throw new Error('Failed to chunk and embed text');
   }
 };
 
-// export const chunkAndEmbedText2 = async (text: string, metadata: Metadata): Promise<void> => {
-//   try {
-//     const chunks = _.chunk(text.split(' '), CHUNK_SIZE).map(chunk => chunk.join(' '));
+const generateEmbeddingsFromSupbaseGteSmall = async (text: string): Promise<string> => {
+  try {
+    const headers = {
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+      "Content-Type": 'application/json'
+    }
 
-//     for (const chunk of chunks) {
-//       const embeddingResponse = await axios.post(GROQ_API_URL, { text: chunk });
-//       const embedding = embeddingResponse.data.embedding;
-//       console.log('embedding->', embedding)
-//       // const { data, error } = await supabase
-//       //   .from('embeddings')
-//       //   .insert([{ chunk, embedding, metadata }]);
+    const response = await axios.post('https://qqfanrpbjwoxpontowbj.supabase.co/functions/v1/textembed', { text: text }, {
+      headers
+    })
 
-//       // if (error) {
-//       //   throw error;
-//       // }
-//     }
-//   } catch (error) {
-//     throw new Error('Failed to chunk and embed text');
-//   }
-// };
+    return JSON.stringify(response.data);
+  } catch (error) {
+    console.error('Error generating embeddings:', error);
+    throw new Error('Failed to generate embeddings');
+  }
+};

@@ -16,3 +16,15 @@ export interface PlanCardType {
   description: Description;
 	btnVariant: "default" | "destructive" | "outline";
 }
+
+export interface ChatbotType {
+  id: string;
+  name: string;
+}
+
+export interface IngestestedTextType {
+  chatbot_id: string;
+  content: string;
+  id: string;
+  type: string;
+}

@@ -16,12 +16,12 @@ export default function CreateNewChatBotLayout({
 				<Sidebar />
 				<div className="flex-1">
 					<div className="flex flex-col align-top lg:flex-row lg:space-x-8 lg:align-middle">
-						<div className="lg:w-4/6">
+						<div className="lg:w-full">
 							{children}
 						</div>
-						<div className="m-auto my-4 w-full lg:my-0 lg:w-2/6">
+						{/* <div className="m-auto my-4 w-full lg:my-0 lg:w-2/6">
 							<DataSources />
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>
